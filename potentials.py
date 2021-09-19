@@ -1,14 +1,6 @@
 from matplotlib.pyplot import axis
 import numpy as np
 
-def enerty_lj_exam(distances, constants, box_length): 
-    """[summary]
-
-    Args:
-        distances ([type]): [description]
-        constants ([type]): [description]
-        box_length ([type]): [description]
-    """
 
 
 def energy_lj_plot_1(distances, constants, box_length): 

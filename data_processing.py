@@ -12,26 +12,30 @@ def plot_p(
     delta_t = 0.002,
     equilibration_time=0.2, 
     mass=1,
+    factors=None
 ):
     """
 
     :return:
     """
+    if factors is None: 
+        factors = [1, 2, 4]
     if out_path is None:
         out_path = prefix_data + "k_plot"
     save_path = out_path + "p_"
     path = prefix_data + "k_"
     for i in [1, 2, 3, 4]:
         new_path = save_path + str(i)
-        for k in [1, 2, 4]:
+        for k in factors:
             load_path = path + str(k)
             grid = np.load(load_path + "grid.npy")[int(equilibration_time/(delta_t*k)):]
             total_energy = get_total_energy(path=load_path, mass=mass)[int(equilibration_time/(delta_t*k)):]
             energy_diff = total_energy - total_energy[0]
 
             plt.plot(grid, grid ** (-i) * energy_diff, label="k = " + str(k))
-            plt.xlabel("time $t\\cdot \\frac{\epsilon}{m\sigma^2}$")
-            plt.ylabel("Error term $\\frac{\delta E(t)(\Delta t)^{-p}}{\epsilon}$")
+            plt.xlabel("Time $t$ in $ \\left(\\frac{\epsilon}{m\sigma^2}\\right)^{\\frac{1}{2}}$")
+            plt.legend()
+            plt.ylabel("Energy differnce $\\delta E(t)$ in $\\epsilon$")
             plt.xticks()
             plt.legend()
             plt.yticks()
@@ -69,7 +73,7 @@ def zoom_plot(
         plt.close()
 
 
-def err_plot(prefix_data, out_path=None, delta_t=0.002, mass=1, equilibration_time=1):
+def err_plot(prefix_data, out_path=None, delta_t=0.002, mass=1, factors=None, equilibration_time=1):
     """
 
     :return:
@@ -77,10 +81,11 @@ def err_plot(prefix_data, out_path=None, delta_t=0.002, mass=1, equilibration_ti
     if out_path is None:
         out_path = prefix_data + "err_plot"
     path = prefix_data + "k_"
-    k_list = [1, 2, 4]
+    if factors is None:
+        factors = [1, 2, 4]
     err_list = []
     dt_list = []
-    for k in k_list:
+    for k in factors:
         load_path = path+str(k)
         total_energy = get_total_energy(path=load_path, mass=mass)
         energy_diff = total_energy - total_energy[0]
@@ -114,25 +119,27 @@ def err_plot(prefix_data, out_path=None, delta_t=0.002, mass=1, equilibration_ti
     plt.close()
 
 
-def plot_k(prefix_data, out_path=None, mass=1):
+def plot_k(prefix_data, out_path=None, mass=1, factors=None):
     """Total Energy plot
 
     Args:
         prefix_data ([type]): folder to saved trajectories
         out_path ([type]): where to save plots
     """
+    if factors is None: 
+        factors = [1, 2, 4] 
     if out_path is None:
         out_path = prefix_data + "k_plot"
     path = prefix_data + "k_"
-    for k in [1, 2, 4]:
+    for k in factors:
         load_path = path + str(k)
         grid = np.load(load_path + "grid.npy")
         total_energy = get_total_energy(path=load_path)
         energy_diff = total_energy - total_energy[0]
         plt.plot(grid, energy_diff, label="k = " + str(k))
-        plt.xlabel("Time $t\\cdot \\frac{\epsilon}{m\sigma^2}$")
+        plt.xlabel("Time $t$ in $ \\left(\\frac{\epsilon}{m\sigma^2}\\right)^{\\frac{1}{2}}$")
         plt.legend()
-        plt.ylabel("Energy differnce $\\frac{\delta E(t)}{\epsilon}$")
+        plt.ylabel("Energy difference $\\delta E(t)$ in $\\epsilon$")
         plt.xticks()
         plt.yticks()
         plt.ticklabel_format(axis="x", style="sci", scilimits=(0, 0))
@@ -164,13 +171,16 @@ def plot_single(prefix_data, trajectory, grid, out_path=None, axis_label=["", ""
     plt.close()
 
 
-def plot_components(prefix, trajectory, grid, axis_label=["", ""]):
+def plot_components(prefix_data, trajectory, grid, axis_label=["", ""], out_path=None):
     """
     plots the cartesian components of a trajectory
     :param prefix: string containing the filepath
     :param trajectory: trajectory of components
     :return:
     """
+    if out_path is None:
+        out_path = prefix_data 
+    path = prefix_data + out_path
     energy_diff_x, energy_diff_y, energy_diff_z = trajectory
     energy_diff_x = energy_diff_x - energy_diff_x[0]
     energy_diff_x = energy_diff_y - energy_diff_y[0]
@@ -180,11 +190,11 @@ def plot_components(prefix, trajectory, grid, axis_label=["", ""]):
     plt.plot(grid, energy_diff_z, label="z component")
     plt.xticks()
     plt.yticks()
-    plt.xlabel(axis_label[1])
-    plt.ylabel(axis_label[0])
+    plt.xlabel(axis_label[0])
+    plt.ylabel(axis_label[1])
     plt.ticklabel_format(axis="x", style="sci", scilimits=(0, 0))
     plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-    plt.savefig(prefix + "total_mom.png")
+    plt.savefig(out_path + "total_mom.png")
     plt.close()
 
 

@@ -3,20 +3,20 @@ from simulation import simulate
 from post_simulation import save_trajectories
 from data_processing import plot_k, plot_p, err_plot
 
-prefix = "ExamErrOrder/"
-traj_path =  "ExamErrOrder/InitialConditions/"
+prefix = "Err1b/"
+traj_path =  "Err1b/InitialConditions/"
 sigma = 1.0
-epsilon = 0.1
+epsilon = 1.0
 constants = [sigma, epsilon]
 dt = 0.0001
 M = 1
-sim_time = 1.0
+sim_time = 0.5
 equilibration_time = sim_time/2
 Ncube = 5
 N = Ncube ** 3
 L = 8
 T0 = 1.6
-factors = [1, 10, 12]
+factors = [1]
 
 for k in factors:
     print("Running simulation with k= ", str(k))

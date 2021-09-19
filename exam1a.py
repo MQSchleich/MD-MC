@@ -1,4 +1,4 @@
-from lj_force import force_lj
+from lj_force import force_lj, force_lj_fast
 from simulation import simulate
 from post_simulation import save_trajectories
 from data_processing import plot_k, plot_p, err_plot
@@ -11,9 +11,9 @@ sigma = 1.0
 sigma = 0.25
 epsilon = 0.1
 constants = [sigma, epsilon]
-dt = 0.002
+dt = 0.0001
 M = 1
-sim_time = 20
+sim_time = 0.8
 equilibration_time = sim_time/2
 Ncube = 128
 #N = Ncube ** 3
@@ -38,8 +38,9 @@ for k in factors:
         M=M,
         steps=steps,
         dt=time_step,
-        force=force_lj,
+        force=force_lj_fast,
         constants=constants,
+        periodic=True,
         from_traj=from_traj,
         heat_bath=False,
         T_heat=None,
@@ -49,3 +50,5 @@ for k in factors:
 plot_k(prefix_data=prefix, mass=M)
 plot_p(prefix_data=prefix, equilibration_time=equilibration_time, mass=M)
 err_plot(prefix_data=prefix, delta_t=dt, mass=M, equilibration_time=equilibration_time)
+
+
