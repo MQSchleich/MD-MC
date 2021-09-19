@@ -1,12 +1,13 @@
 from operator import pos
 import numpy as np
-import math 
-import openmc 
+import math
+import openmc
 import matplotlib.pyplot as plt
 from potentials import energy_lj_fast
-from tqdm import tqdm 
+from tqdm import tqdm
 
-def InitMonteCarlo(N, L, constants, tol = 10**(3)): 
+
+def InitMonteCarlo(N, L, constants, tol=10 ** (3)):
     """intialize particles with MC 
 
     Args:
@@ -14,20 +15,20 @@ def InitMonteCarlo(N, L, constants, tol = 10**(3)):
         L ([type]): [description]
     """
     epsilon, sigma = constants
-    N_cube = math.floor(N**(1/3))
-    positions = InitPositionCubic(Ncube=N_cube, L=L)[:2,:]
-    #assert positions.shape == (125,3)
+    N_cube = math.floor(N ** (1 / 3))
+    positions = InitPositionCubic(Ncube=N_cube, L=L)[:2, :]
+    # assert positions.shape == (125,3)
     counter = 0
     prev_energy = energy_lj_fast(positions, constants, box_length=L)
     for i in tqdm(range(126)):
-        
+
         energy_high = True
         while energy_high == True:
-            ran_floats = np.random.uniform(low=-4, high=4, size=3).reshape((1,3))
-            tmp_new_pos = np.concatenate((positions, ran_floats), axis = 0)
+            ran_floats = np.random.uniform(low=-4, high=4, size=3).reshape((1, 3))
+            tmp_new_pos = np.concatenate((positions, ran_floats), axis=0)
             new_energy = energy_lj_fast(positions, constants, box_length=L)
             dif = abs(prev_energy - new_energy)
-            if dif <= tol: 
+            if dif <= tol:
                 positions = tmp_new_pos
                 prev_energy = new_energy
                 counter += 1
@@ -35,7 +36,9 @@ def InitMonteCarlo(N, L, constants, tol = 10**(3)):
                 print("added particle ", counter)
                 energy_high = False
     return positions
-def InitPositionCircles(N,L): 
+
+
+def InitPositionCircles(N, L):
     """generates cubic initialization exam
 
     Args:
@@ -46,33 +49,43 @@ def InitPositionCircles(N,L):
     T = [1, 7, 13]
     R = [0.0, 2, 4]
 
-    particles = np.zeros((128,3))
+    particles = np.zeros((128, 3))
 
     def rtpairs(r, n):
 
         for i in range(len(r)):
-           for j in range(n[i]):    
-               yield r[i], j*(2 * np.pi / n[i])
+            for j in range(n[i]):
+                yield r[i], j * (2 * np.pi / n[i])
+
     counter = 0
     for i in range(4):
-        for j in range(len(R)): 
-            for k in range(len(T)): 
+        for j in range(len(R)):
+            for k in range(len(T)):
                 r = R[j]
-                t = j*(2 * np.pi / T[k])
-                particles[counter,:] = [r * np.cos(t), r * np.sin(t),i]
+                t = j * (2 * np.pi / T[k])
+                particles[counter, :] = [r * np.cos(t), r * np.sin(t), i]
                 counter += 1
     return particles
 
-def InitPositionCubicMC(N, L): 
-    min_x = openmc.XPlane(x0=-4, boundary_type='reflective')
-    max_x = openmc.XPlane(x0=4, boundary_type='reflective')
-    min_y = openmc.YPlane(y0=-4, boundary_type='reflective')
-    max_y = openmc.YPlane(y0=4, boundary_type='reflective')
-    min_z = openmc.ZPlane(z0=-4, boundary_type='reflective')
-    max_z = openmc.ZPlane(z0=4, boundary_type='reflective')
+
+def InitPositionCubicMC(N, L):
+    min_x = openmc.XPlane(x0=-4, boundary_type="reflective")
+    max_x = openmc.XPlane(x0=4, boundary_type="reflective")
+    min_y = openmc.YPlane(y0=-4, boundary_type="reflective")
+    max_y = openmc.YPlane(y0=4, boundary_type="reflective")
+    min_z = openmc.ZPlane(z0=-4, boundary_type="reflective")
+    max_z = openmc.ZPlane(z0=4, boundary_type="reflective")
     region = +min_x & -max_x & +min_y & -max_y & +min_z & -max_z
-    positions = openmc.model.pack_spheres(radius=0.4, region=region, pf=None, num_spheres=128, contraction_rate=0.001, seed=41)
+    positions = openmc.model.pack_spheres(
+        radius=0.4,
+        region=region,
+        pf=None,
+        num_spheres=128,
+        contraction_rate=0.001,
+        seed=41,
+    )
     return positions
+
 
 def InitPositionCubic(Ncube, L):
     """Places Ncube^3 atoms in a cubic box; returns position vector"""
@@ -105,13 +118,14 @@ def InitVelocity(N, T0, mass=1.0, seed=1):
     velocity *= vscale  # rescale
     return velocity
 
-if __name__ =="__main__": 
+
+if __name__ == "__main__":
     fig = plt.figure()
-    ax = fig.add_subplot(projection='3d')
+    ax = fig.add_subplot(projection="3d")
     positions = np.load("Exam1a/pos.npy")
-    ax.scatter(positions[:,0], positions[:,1], positions[:,2], marker="o")
-    ax.set_xlabel('X coordinate $\\frac{l_x}{\\sigma}$')
-    ax.set_ylabel('Y coordinate $\\frac{l_x}{\\sigma}$')
-    ax.set_zlabel('Z coordinate $\\frac{l_x}{\\sigma}$')
+    ax.scatter(positions[:, 0], positions[:, 1], positions[:, 2], marker="o")
+    ax.set_xlabel("X coordinate $\\frac{l_x}{\\sigma}$")
+    ax.set_ylabel("Y coordinate $\\frac{l_x}{\\sigma}$")
+    ax.set_zlabel("Z coordinate $\\frac{l_x}{\\sigma}$")
 
     plt.show()

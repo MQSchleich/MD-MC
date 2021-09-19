@@ -1,17 +1,19 @@
-import numpy as np 
-import matplotlib.pyplot as plt 
+import numpy as np
+import matplotlib.pyplot as plt
 
 
-def replot_ener_diff(traj_path, grid_path, save_path): 
+def replot_ener_diff(traj_path, grid_path, save_path):
     """[summary]
 
     Args:
         traj_path ([type]): [description]
         grid_path ([type]): [description]
     """
-    
-    axis_label=["Time $t$ in $\\frac{\epsilon}{m\sigma^2}$", 
-           "Energy difference $\\delta E(t)$ in $\\epsilon$"]
+
+    axis_label = [
+        "Time $t$ in $\\frac{\epsilon}{m\sigma^2}$",
+        "Energy difference $\\delta E(t)$ in $\\epsilon$",
+    ]
     grid = np.load(grid_path)
     ener = np.load(traj_path)
     ener = ener - ener[0]
@@ -26,7 +28,9 @@ def replot_ener_diff(traj_path, grid_path, save_path):
     print("saved figure.")
 
 
-if __name__ == "__main__": 
-    replot_ener_diff("EquilEpsilon1/e_pot.npy", 
-                      "EquilEpsilon1/grid.npy", 
-                      "EquilEpsilon1/eps1_EquilSample.png")
+if __name__ == "__main__":
+    replot_ener_diff(
+        "EquilEpsilon1/e_pot.npy",
+        "EquilEpsilon1/grid.npy",
+        "EquilEpsilon1/eps1_EquilSample.png",
+    )

@@ -2,20 +2,15 @@ from matplotlib.pyplot import axis
 import numpy as np
 
 
-
-def energy_lj_plot_1(distances, constants, box_length): 
+def energy_lj_plot_1(distances, constants, box_length):
     """
     """
     epsilon, sigma = constants
-    tmp = sigma/distances
-    tmp_six = tmp**6
-    tmp_twelve = tmp_six**2
-    e_pot = (
-        4
-        * epsilon
-        * (tmp_twelve- tmp_six)
-    )
-    #e_pot[np.isnan(e_pot)] = 0
+    tmp = sigma / distances
+    tmp_six = tmp ** 6
+    tmp_twelve = tmp_six ** 2
+    e_pot = 4 * epsilon * (tmp_twelve - tmp_six)
+    # e_pot[np.isnan(e_pot)] = 0
 
     return e_pot
 
@@ -41,7 +36,7 @@ def energy_lj_fast(positions, constants, box_length):
 
     # calculate NxN matrix with distances |r[i] - r[j]|
     # set zero values to None for calculation of acceleration
-    
+
     distances = np.linalg.norm(separations, axis=-1)
     distances[distances == 0] = None
 

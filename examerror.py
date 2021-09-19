@@ -4,14 +4,14 @@ from post_simulation import save_trajectories
 from data_processing import plot_k, plot_p, err_plot
 
 prefix = "ExamErrOrder/"
-traj_path =  "ExamErrOrder/InitialConditions/"
+traj_path = "ExamErrOrder/InitialConditions/"
 sigma = 1.0
 epsilon = 0.1
 constants = [sigma, epsilon]
 dt = 0.0001
 M = 1
 sim_time = 1.0
-equilibration_time = sim_time/2
+equilibration_time = sim_time / 2
 Ncube = 5
 N = Ncube ** 3
 L = 8
@@ -39,5 +39,13 @@ for k in factors:
     )
     save_trajectories(trajs, prefix=prefix_new)
 plot_k(prefix_data=prefix, mass=M, factors=factors)
-plot_p(prefix_data=prefix, equilibration_time=equilibration_time, mass=M, factors = factors)
-err_plot(prefix_data=prefix, delta_t=dt, mass=M, equilibration_time=equilibration_time, factors = factors)
+plot_p(
+    prefix_data=prefix, equilibration_time=equilibration_time, mass=M, factors=factors
+)
+err_plot(
+    prefix_data=prefix,
+    delta_t=dt,
+    mass=M,
+    equilibration_time=equilibration_time,
+    factors=factors,
+)

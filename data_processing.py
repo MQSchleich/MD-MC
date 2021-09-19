@@ -8,17 +8,18 @@ from potentials import energy_lj_fast
 
 
 def plot_p(
-    prefix_data, out_path=None, 
-    delta_t = 0.002,
-    equilibration_time=0.2, 
+    prefix_data,
+    out_path=None,
+    delta_t=0.002,
+    equilibration_time=0.2,
     mass=1,
-    factors=None
+    factors=None,
 ):
     """
 
     :return:
     """
-    if factors is None: 
+    if factors is None:
         factors = [1, 2, 4]
     if out_path is None:
         out_path = prefix_data + "k_plot"
@@ -28,12 +29,18 @@ def plot_p(
         new_path = save_path + str(i)
         for k in factors:
             load_path = path + str(k)
-            grid = np.load(load_path + "grid.npy")[int(equilibration_time/(delta_t*k)):]
-            total_energy = get_total_energy(path=load_path, mass=mass)[int(equilibration_time/(delta_t*k)):]
+            grid = np.load(load_path + "grid.npy")[
+                int(equilibration_time / (delta_t * k)) :
+            ]
+            total_energy = get_total_energy(path=load_path, mass=mass)[
+                int(equilibration_time / (delta_t * k)) :
+            ]
             energy_diff = total_energy - total_energy[0]
 
             plt.plot(grid, grid ** (-i) * energy_diff, label="k = " + str(k))
-            plt.xlabel("Time $t$ in $ \\left(\\frac{\epsilon}{m\sigma^2}\\right)^{\\frac{1}{2}}$")
+            plt.xlabel(
+                "Time $t$ in $ \\left(\\frac{\epsilon}{m\sigma^2}\\right)^{\\frac{1}{2}}$"
+            )
             plt.legend()
             plt.ylabel("Energy differnce $\\delta E(t)$ in $\\epsilon$")
             plt.xticks()
@@ -73,7 +80,14 @@ def zoom_plot(
         plt.close()
 
 
-def err_plot(prefix_data, out_path=None, delta_t=0.002, mass=1, factors=None, equilibration_time=1):
+def err_plot(
+    prefix_data,
+    out_path=None,
+    delta_t=0.002,
+    mass=1,
+    factors=None,
+    equilibration_time=1,
+):
     """
 
     :return:
@@ -86,10 +100,10 @@ def err_plot(prefix_data, out_path=None, delta_t=0.002, mass=1, factors=None, eq
     err_list = []
     dt_list = []
     for k in factors:
-        load_path = path+str(k)
+        load_path = path + str(k)
         total_energy = get_total_energy(path=load_path, mass=mass)
         energy_diff = total_energy - total_energy[0]
-        interesting_diff = energy_diff[int(equilibration_time / (delta_t*k)) :]
+        interesting_diff = energy_diff[int(equilibration_time / (delta_t * k)) :]
         mean_err = np.linalg.norm(interesting_diff, ord=1)
         dt_list.append(delta_t ** k)
         err_list.append(mean_err)
@@ -101,13 +115,12 @@ def err_plot(prefix_data, out_path=None, delta_t=0.002, mass=1, factors=None, eq
         plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
     x_val = np.log(np.array(dt_list))
     y_val = np.log(np.array(err_list))
-    fitted_line, slope, shift, pearson_r = linear_regression(
-        x_val, y_val)
+    fitted_line, slope, shift, pearson_r = linear_regression(x_val, y_val)
     plt.scatter(
         np.log(np.array(dt_list)),
         np.log(np.array(err_list)),
         label="$\log(\delta E(t))$",
-        c="orange"
+        c="orange",
     )
     plt.plot(
         np.log(np.array(dt_list)),
@@ -126,8 +139,8 @@ def plot_k(prefix_data, out_path=None, mass=1, factors=None):
         prefix_data ([type]): folder to saved trajectories
         out_path ([type]): where to save plots
     """
-    if factors is None: 
-        factors = [1, 2, 4] 
+    if factors is None:
+        factors = [1, 2, 4]
     if out_path is None:
         out_path = prefix_data + "k_plot"
     path = prefix_data + "k_"
@@ -137,7 +150,9 @@ def plot_k(prefix_data, out_path=None, mass=1, factors=None):
         total_energy = get_total_energy(path=load_path)
         energy_diff = total_energy - total_energy[0]
         plt.plot(grid, energy_diff, label="k = " + str(k))
-        plt.xlabel("Time $t$ in $ \\left(\\frac{\epsilon}{m\sigma^2}\\right)^{\\frac{1}{2}}$")
+        plt.xlabel(
+            "Time $t$ in $ \\left(\\frac{\epsilon}{m\sigma^2}\\right)^{\\frac{1}{2}}$"
+        )
         plt.legend()
         plt.ylabel("Energy difference $\\delta E(t)$ in $\\epsilon$")
         plt.xticks()
@@ -167,7 +182,7 @@ def plot_single(prefix_data, trajectory, grid, out_path=None, axis_label=["", ""
     plt.ylabel(axis_label[1])
     plt.ticklabel_format(axis="x", style="sci", scilimits=(0, 0))
     plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
-    plt.savefig(path, dpi = 300)
+    plt.savefig(path, dpi=300)
     plt.close()
 
 
@@ -179,7 +194,7 @@ def plot_components(prefix_data, trajectory, grid, axis_label=["", ""], out_path
     :return:
     """
     if out_path is None:
-        out_path = prefix_data 
+        out_path = prefix_data
     path = prefix_data + out_path
     energy_diff_x, energy_diff_y, energy_diff_z = trajectory
     energy_diff_x = energy_diff_x - energy_diff_x[0]

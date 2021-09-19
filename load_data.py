@@ -1,7 +1,8 @@
 import numpy as np
 import warnings
 
-def load_initials(prefix): 
+
+def load_initials(prefix):
     """Load initial conditions from another trajectory
 
     Args:
@@ -10,13 +11,12 @@ def load_initials(prefix):
     Returns:
         [type]: [description]
     """
-    pos = load_traj(prefix+"pos.npy")
-    vels = load_traj(prefix+"vel.npy")
+    pos = load_traj(prefix + "pos.npy")
+    vels = load_traj(prefix + "vel.npy")
     return [pos, vels]
 
 
-
-def load_traj(path): 
+def load_traj(path):
     """path to trajectory
 
     Args:
@@ -24,8 +24,7 @@ def load_traj(path):
     """
     pos = np.load(path)
     try:
-        return pos[:,:, -1]
+        return pos[:, :, -1]
     except:
         warnings.warn("Loading an initial configuation not a trajectory")
         return pos
-

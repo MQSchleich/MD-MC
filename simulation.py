@@ -29,7 +29,7 @@ def simulate(
 
     sigma, epsilon = constants
     if from_traj != None:
-        positions,velocities = load_initials(from_traj)
+        positions, velocities = load_initials(from_traj)
         N = len(positions)
     else:
         positions = initializer(Ncube, L, constants)
@@ -42,7 +42,6 @@ def simulate(
     pos = np.zeros((N, positions.shape[1], steps))
     for t in tqdm(range(0, steps)):
 
-            
         if heat_bath == True:
             velocities = InitVelocity(N, T_heat, M)
         E_pot[t] = energy_lj_fast(
@@ -52,8 +51,8 @@ def simulate(
             positions, [sigma, epsilon], L
         )  ## calculate forces; should be a function that returns an N x 3 array
         A = F / M
-        if periodic == True: 
-            positions[positions >= L / 2] -= L 
+        if periodic == True:
+            positions[positions >= L / 2] -= L
             positions[positions < -L / 2] += L
         nR = VerletNextR(positions, velocities, A, dt)
         # my_pos_in_box(nR, L)  ## from PrairieLearn HW
