@@ -1,7 +1,8 @@
 import numpy as np
 import warnings
+from numba import njit 
 
-
+@njit
 def load_initials(prefix):
     """Load initial conditions from another trajectory
 

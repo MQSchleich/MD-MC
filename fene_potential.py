@@ -1,6 +1,8 @@
 from operator import pos
 import numpy as np
+from numba import njit
 
+@njit
 def fene_chain_potential(positions, constants = [1,1]):
     """
     """
@@ -12,9 +14,8 @@ def fene_chain_potential(positions, constants = [1,1]):
             distance = np.linalg.norm(positions[i,:]- positions[j,:])
             potential[i, j] = -0.5*K*r_max**2*np.log(1-(distance/r_max)**2)
 
-    potential[np.tril_indices_from(potential)] -= potential[np.triu_indices_from(potential)]
-    print(potential)
-    print(np.sum(potential, axis =1))
+    #potential[np.tril_indices_from(potential)] -= potential[np.triu_indices_from(potential)]
+    return np.sum(potential)
 
 
 def fene_ring_potential(positions, r_max, K): 
@@ -28,5 +29,11 @@ def fene_ring_potential(positions, r_max, K):
     raise NotImplementedError
 
 if __name__ == "__main__": 
-    positions = np.random.random((5,3))
-    fene_chain_potential(positions)
+    from initialization import InitFeneChain
+    k = 1
+    r_max = 1 
+    N = 48
+    L = (N*r_max)/3
+    constants = [r_max, k]
+    positions = InitFeneChain(48, L, constants,) 
+    print(fene_chain_potential(positions, constants))

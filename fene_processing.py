@@ -1,3 +1,4 @@
+from matplotlib.pyplot import axis
 import numpy as np 
 
 def radius_of_gyration(pos_traj, N): 
@@ -8,7 +9,7 @@ def radius_of_gyration(pos_traj, N):
         N (int): N_particles
     """
     mean_pos = np.mean(pos_traj, axis=0)
-    diff = mean_pos - pos_traj
+    diff = np.linalg.norm((mean_pos - pos_traj), axis=1)
     r_g = (np.sum(diff, axis=0)/N)**(1/2)
     return r_g
 
@@ -18,7 +19,7 @@ def end_to_end_dist(pos_traj):
     Args:
         pos_traj ([type]): [description]
     """
-    return np.abs(np.sum(pos_traj, axis=0)-pos_traj[0,:,:])
+    return np.linalg.norm((np.sum(pos_traj, axis=0)-pos_traj[0,:,:]), axis=0)
 
 def isochoric_heat(u_tot, k, T):
     """

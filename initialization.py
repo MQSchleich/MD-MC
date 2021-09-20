@@ -3,8 +3,30 @@ import numpy as np
 import math
 import openmc
 import matplotlib.pyplot as plt
+from fene_potential import fene_chain_potential
 from potentials import energy_lj_fast
 from tqdm import tqdm
+from numba import njit
+
+
+@njit
+def InitFeneChain(N, L, constants):
+    """[summary]
+
+    Args:
+        N ([type]): [description]
+        L ([type]): [description]
+        constants ([type]): [description]
+        tol ([type], optional): [description]. Defaults to 10**(3).
+
+    Returns:
+        [type]: [description]
+    """
+    r_max, K = constants
+    N_cube  = math.floor(N**(1/3))+1
+    pos = InitPositionCubic(N, L=N*r_max/3)
+    return pos[:N, :]
+
 
 
 def InitMonteCarlo(N, L, constants, tol=10 ** (3)):
@@ -86,7 +108,7 @@ def InitPositionCubicMC(N, L):
     )
     return positions
 
-
+@njit
 def InitPositionCubic(Ncube, L):
     """Places Ncube^3 atoms in a cubic box; returns position vector"""
     N = Ncube ** 3
@@ -105,7 +127,7 @@ def InitPositionCubic(Ncube, L):
                 n += 1
     return position
 
-
+@njit
 def InitVelocity(N, T0, mass=1.0, seed=1):
     dim = 3
     np.random.seed(seed)
@@ -118,14 +140,26 @@ def InitVelocity(N, T0, mass=1.0, seed=1):
     velocity *= vscale  # rescale
     return velocity
 
-
-if __name__ == "__main__":
+def visualize_init(positions): 
     fig = plt.figure()
     ax = fig.add_subplot(projection="3d")
-    positions = np.load("Exam1a/pos.npy")
     ax.scatter(positions[:, 0], positions[:, 1], positions[:, 2], marker="o")
     ax.set_xlabel("X coordinate $\\frac{l_x}{\\sigma}$")
-    ax.set_ylabel("Y coordinate $\\frac{l_x}{\\sigma}$")
-    ax.set_zlabel("Z coordinate $\\frac{l_x}{\\sigma}$")
+    ax.set_ylabel("Y coordinate $\\frac{l_y}{\\sigma}$")
+    ax.set_zlabel("Z coordinate $\\frac{l_z}{\\sigma}$")
 
     plt.show()
+
+
+if __name__ == "__main__":
+    K = 1
+    r_max = 1
+    constants = [K, r_max]
+    N = 48
+    L = N*r_max/3
+    positions = InitFeneChain(N, L, constants)
+
+    visualize_init(positions)
+    pos_2 = np.load("EquilFeneChain/pos.npy")
+    visualize_init(pos_2[:,:,0])
+    
