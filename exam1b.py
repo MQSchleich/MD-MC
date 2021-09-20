@@ -15,8 +15,7 @@ dt = 0.0001
 M = 1
 sim_time = 0.5
 equilibration_time = sim_time / 2
-Ncube = 5
-N = Ncube ** 3
+N_cube = 128
 L = 8
 T0 = 1.6
 
@@ -42,8 +41,9 @@ save_trajectories(trajs, prefix=prefix)
 E_kin = calculate_kinetic_energy(vel_trajectory=vels, mass=M)
 E_tot = E_kin + E_pot
 E_diff = E_tot - E_tot[0]
+
 axis_label = [
-    "Time $t$ in $\\frac{\epsilon}{m\sigma^2}$",
+    "Time $t$ in $\\frac{\epsilon}{m\sigma^2}^{\\frac{1}{2}}$",
     "Energy difference $\\delta E(t)$ in $\\epsilon$",
 ]
 plot_single(
@@ -54,7 +54,7 @@ plot_single(
     axis_label=axis_label,
 )
 axis_label = [
-    "Time $t$ in $\\frac{\epsilon}{m\sigma^2}$",
+    "Time $t$ in $\\frac{\epsilon}{m\sigma^2}^{\\frac{1}{2}}$",
     "Momentum difference $\\delta p(t)$ in $\\frac{m\\sigma}{\\tau}$",
 ]
 plot_components(

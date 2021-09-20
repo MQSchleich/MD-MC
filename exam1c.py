@@ -4,10 +4,12 @@ from lj_force import force_lj_fast, force_lj
 from simulation import simulate
 from post_simulation import save_trajectories
 from data_processing import plot_components, plot_single, calculate_kinetic_energy
-from statistics import compute_statistics_b
+from statistics import compute_statistics_c
+from pressure import calculate_pressure_virial
 
-prefix = "Exam1b/"
-traj_path = "Exam1b/InitialConditions/"
+
+prefix = "Exam1c/"
+traj_path = "Exam1c/InitialConditions/"
 sigma = 1.0
 epsilon = 1.0
 constants = [sigma, epsilon]
@@ -15,8 +17,7 @@ dt = 0.0001
 M = 1
 sim_time = 0.5
 equilibration_time = sim_time / 2
-Ncube = 5
-N = Ncube ** 3
+Ncube = 128
 L = 8
 T0 = 1.6
 
@@ -37,6 +38,7 @@ grid, pos, vels, E_pot = simulate(
     heat_bath=False,
     T_heat=None,
 )
+
 trajs = [grid, pos, vels, E_pot]
 save_trajectories(trajs, prefix=prefix)
 E_kin = calculate_kinetic_energy(vel_trajectory=vels, mass=M)
@@ -53,6 +55,7 @@ plot_single(
     grid=grid,
     axis_label=axis_label,
 )
+
 axis_label = [
     "Time $t$ in $\\frac{\epsilon}{m\sigma^2}$",
     "Momentum difference $\\delta p(t)$ in $\\frac{m\\sigma}{\\tau}$",
@@ -63,4 +66,35 @@ plot_components(
     grid=grid,
     axis_label=axis_label,
 )
-compute_statistics_b(ener_traj=E_tot, momentum_traj=np.sum(vels, axis=0) / M)
+
+axis_label = [
+    "Time $t$ in $\\frac{\epsilon}{m\sigma^2}^{\\frac{1}{2}}$",
+    "Potential Energy $E_{pot}$ in $\\epsilon$",
+]
+plot_single(
+    prefix_data=prefix,
+    out_path="E_pot",
+    trajectory=E_pot,
+    grid=grid,
+    axis_label=axis_label,
+)
+
+
+pressure = calculate_pressure_virial(
+    vel_trajectory=vels, masses=M, N=Ncube, k=1, epsilon=epsilon, sigma_q=512
+)
+
+axis_label = [
+    "Time $t$ in $\\frac{\epsilon}{m\sigma^2}^{\\frac{1}{2}}$",
+    "Pressure $P$ in $\\frac{m}{\\sigma\\tau^2}$",
+]
+plot_single(
+    prefix_data=prefix,
+    out_path="Pressure",
+    trajectory=pressure,
+    grid=grid,
+    axis_label=axis_label,
+)
+
+
+compute_statistics_c(ener_traj=E_pot, pressure_traj=pressure)
