@@ -209,6 +209,7 @@ def plot_components(prefix_data, trajectory, grid, axis_label=["", ""], out_path
     plt.ylabel(axis_label[1])
     plt.ticklabel_format(axis="x", style="sci", scilimits=(0, 0))
     plt.ticklabel_format(axis="y", style="sci", scilimits=(0, 0))
+    plt.legend()
     plt.savefig(out_path + "total_mom.png")
     plt.close()
 
