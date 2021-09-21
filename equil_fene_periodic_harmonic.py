@@ -1,16 +1,16 @@
 import numpy as np
 
-from fene_potential import fene_chain_potential, fene_ring_potential
-from fene_force import force_fene_periodic
-from simulation_langevin import simulate
+from harmonic_potential import harmonic_potential_periodic
+from force_harmonic import force_fene_periodic
+from simulation_fene_five import simulate
 from post_simulation import save_trajectories
 from data_processing import plot_components, plot_single, calculate_kinetic_energy
 from statistics import compute_statistics_c
 from pressure import calculate_pressure_virial
 
 
-prefix = "EquilFeneLangevin/"
-traj_path = "EquilFeneLangevin/InitialConditions/"
+prefix = "EquilFenePeriodicHarmonic/"
+traj_path = "EquilFenePeriodicHarmonic/InitialConditions/"
 #pos = np.load(traj_path+"pos.npy")[:,:,-1]
 #vels = np.load(traj_path+"vel.npy")[:,:,-1]
 r_max= 1.0
@@ -24,8 +24,7 @@ Ncube = 48
 k_b = 1
 L = Ncube*r_max/3
 T0 = 0.1*K*r_max/k_b
-kbT = k_b*T0
-gamma = 0.2*np.sqrt(K/M)
+
 time_step = dt
 steps = int(sim_time / time_step)
 
@@ -36,10 +35,8 @@ grid, pos, vels, E_pot = simulate(
     M=M,
     steps=steps,
     dt=time_step,
-    gamma = gamma,
-    kbT = kbT,
     force=force_fene_periodic,
-    energy=fene_ring_potential,
+    energy=harmonic_potential_periodic,
     constants=constants,
     periodic=True
 )

@@ -2,7 +2,7 @@ import numpy as np
 
 from fene_potential import fene_chain_potential, fene_ring_potential
 from fene_force import force_fene_periodic
-from simulation_fene import simulate
+from simulation_fene_five import simulate
 from post_simulation import save_trajectories
 from data_processing import plot_components, plot_single, calculate_kinetic_energy
 from statistics import compute_statistics_c
@@ -13,12 +13,12 @@ prefix = "EquilFenePeriodic/"
 traj_path = "EquilFenePeriodic/InitialConditions/"
 #pos = np.load(traj_path+"pos.npy")[:,:,-1]
 #vels = np.load(traj_path+"vel.npy")[:,:,-1]
-r_max= 2.0
+r_max= 1.0
 K = 15.0
 constants = [r_max, K]
-dt = 0.001
+dt = 0.002
 M = 1
-sim_time =5
+sim_time =500
 equilibration_time = sim_time / 2
 Ncube = 48
 k_b = 1
