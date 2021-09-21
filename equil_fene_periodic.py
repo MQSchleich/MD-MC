@@ -1,7 +1,7 @@
 import numpy as np
 
-from fene_potential import fene_chain_potential
-from fene_force import fene_chain_force
+from fene_potential import fene_chain_potential, fene_ring_potential
+from fene_force import force_fene_periodic
 from simulation_fene import simulate
 from post_simulation import save_trajectories
 from data_processing import plot_components, plot_single, calculate_kinetic_energy
@@ -9,18 +9,20 @@ from statistics import compute_statistics_c
 from pressure import calculate_pressure_virial
 
 
-prefix = "EquilFeneChain/"
-traj_path = "EquilFeneChain/InitialConditions/"
-r_max= 1.0
-K = 1.0
+prefix = "EquilFenePeriodic/"
+traj_path = "EquilFenePeriodic/InitialConditions/"
+#pos = np.load(traj_path+"pos.npy")[:,:,-1]
+#vels = np.load(traj_path+"vel.npy")[:,:,-1]
+r_max= 2.0
+K = 15.0
 constants = [r_max, K]
-dt = 0.002
+dt = 0.001
 M = 1
-sim_time =100
+sim_time =5
 equilibration_time = sim_time / 2
 Ncube = 48
 k_b = 1
-L = N*r_max/3
+L = Ncube*r_max/3
 T0 = 0.1*K*r_max/k_b
 
 time_step = dt
@@ -33,13 +35,11 @@ grid, pos, vels, E_pot = simulate(
     M=M,
     steps=steps,
     dt=time_step,
-    force=fene_chain_force,
+    force=force_fene_periodic,
+    energy=fene_ring_potential,
     constants=constants,
-    periodic=True,
-    heat_bath=False,
-    T_heat=None,
+    periodic=True
 )
-
 trajs = [grid, pos, vels, E_pot]
 save_trajectories(trajs, prefix=prefix)
 E_kin = calculate_kinetic_energy(vel_trajectory=vels, mass=M)

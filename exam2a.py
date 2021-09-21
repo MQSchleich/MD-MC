@@ -62,7 +62,7 @@ axis_label = [
 ]
 plot_single(
     prefix_data=prefix,
-    out_path="E_diff",
+    out_path="E_diff_sim",
     trajectory=E_diff/Ncube,
     grid=grid,
     axis_label=axis_label,
@@ -85,7 +85,7 @@ axis_label = [
 ]
 plot_single(
     prefix_data=prefix,
-    out_path="E_pot",
+    out_path="E_pot_sim",
     trajectory=E_pot/Ncube,
     grid=grid,
     axis_label=axis_label,

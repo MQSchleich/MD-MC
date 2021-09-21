@@ -1,6 +1,6 @@
 from matplotlib.pyplot import axis
 import numpy as np
-
+from numba import njit
 
 def energy_lj_plot_1(distances, constants, box_length):
     """
@@ -14,7 +14,19 @@ def energy_lj_plot_1(distances, constants, box_length):
 
     return e_pot
 
-
+def energy_lj(positions, constants, box_length):
+    """
+    """
+    for i in range(0,num-1): 
+        for j in range(i+1, num): 
+            difference=positions[j,:]- positions[i,:]
+            distance = np.linalg.norm(difference)
+            if distance> box_length/2: 
+                 distance -= box_length/2
+            elif distance<= -box_length/2: 
+                distance += box_length/2 
+                
+#TODO implement
 def energy_lj_fast(positions, constants, box_length):
     """
 

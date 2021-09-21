@@ -20,6 +20,7 @@ def simulate(
     dt,
     force,
     constants,
+    energy=fene_chain_potential,
     periodic=False,
     from_traj=None,
     pos=None, 
@@ -43,11 +44,11 @@ def simulate(
     vels = np.zeros((N, positions.shape[1], steps))
     pos = np.zeros((N, positions.shape[1], steps))
     for t in tqdm(range(0, steps)):
-        E_pot[t] = fene_chain_potential(
+        E_pot[t] = energy(
             positions, constants
         )  # calculate potential energy contribution
         F = force(
-            positions, constants
+            positions, r_max, K
         )  ## calculate forces; should be a function that returns an N x 3 array
         A = F / M
         if periodic == True:
@@ -57,7 +58,7 @@ def simulate(
         # my_pos_in_box(nR, L)  ## from PrairieLearn HW
 
         nF = force(
-            nR, constants
+            nR, r_max, K
         )  ## calculate forces with new positions nR
         nA = nF / M
         nV = VerletNextV(velocities, A, nA, dt)

@@ -8,7 +8,7 @@ from initialization import InitPositionCubic, InitVelocity
 from potentials import energy_lj_fast, kinetic_energy
 from lj_force import force_lj, force_lj_fast
 from load_data import load_initials
-
+from numba import njit 
 
 def simulate(
     Ncube,
@@ -70,7 +70,7 @@ def simulate(
     grid = np.arange(0, steps * dt, dt)
     return [grid, pos, vels, E_pot]
 
-
+@njit
 def VerletNextR(r_t, v_t, a_t, h):
     """Return new positions after one Verlet step"""
     # Note that these are vector quantities.
@@ -78,7 +78,7 @@ def VerletNextR(r_t, v_t, a_t, h):
     r_t_plus_h = r_t + v_t * h + 0.5 * a_t * h * h
     return r_t_plus_h
 
-
+@njit
 def VerletNextV(v_t, a_t, a_t_plus_h, h):
     """Return new velocities after one Verlet step"""
     # Note that these are vector quantities.

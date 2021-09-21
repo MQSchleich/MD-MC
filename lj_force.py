@@ -21,6 +21,10 @@ def force_lj_fast(positions, constants, box_length):
         for j in range(i+1, num): 
             difference=positions[j,:]- positions[i,:]
             distance = np.linalg.norm(difference)
+            if distance> box_length/2: 
+                 distance -= box_length/2
+            elif distance<= -box_length/2: 
+                distance += box_length/2
             lj_part = (sigma/distance)**6
             lj_part_two = lj_part**2
             factor = 24*epsilon

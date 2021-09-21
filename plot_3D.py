@@ -20,8 +20,8 @@ def plot_positions(path_traj, single=False):
             positions[:, 0, -1], positions[:, 1, -1], positions[:, 2, -1], marker="o"
         )
     ax.set_xlabel("X coordinate $\\frac{l_x}{\\sigma}$")
-    ax.set_ylabel("Y coordinate $\\frac{l_x}{\\sigma}$")
-    ax.set_zlabel("Z coordinate $\\frac{l_x}{\\sigma}$")
+    ax.set_ylabel("Y coordinate $\\frac{l_y}{\\sigma}$")
+    ax.set_zlabel("Z coordinate $\\frac{l_z}{\\sigma}$")
 
     plt.show()
 
