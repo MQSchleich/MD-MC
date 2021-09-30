@@ -30,7 +30,7 @@ def replot_ener_diff(traj_path, grid_path, save_path):
 
 if __name__ == "__main__":
     replot_ener_diff(
-        "EquilEpsilon1/e_pot.npy",
-        "EquilEpsilon1/grid.npy",
-        "EquilEpsilon1/eps1_EquilSample.png",
+        "ZeroKelvin025T/00000002cllapsefastimplementation/e_pot.npy",
+        "ZeroKelvin025T/00000002cllapsefastimplementation/grid.npy",
+        "ZeroKelvin025T/00000002cllapsefastimplementation/wave_particle.png",
     )

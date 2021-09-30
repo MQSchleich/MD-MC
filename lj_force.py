@@ -1,7 +1,7 @@
 import numpy as np
 from numba import njit
 
-@njit
+@njit()
 def force_lj_fast(positions, constants, box_length):
     """
 
@@ -28,8 +28,8 @@ def force_lj_fast(positions, constants, box_length):
             lj_part = (sigma/distance)**6
             lj_part_two = lj_part**2
             factor = 24*epsilon
-            factor_2 = 2*factor_2
-            force[i, j, :] = (factor_2 * lj_part_two - factor*lj_part)/distance
+            factor_two = 2*factor
+            force[i, j, :] = (factor_two * lj_part_two - factor*lj_part)/distance
             force[j, i, :] -= force[i, j, :]
    
     return np.sum(force, axis=1)

@@ -40,16 +40,16 @@ def plot_fourier(ener_traj, grid, save_path):
     plt.plot(freq/(grid[1]-grid[0]), fft.real)
     plt.xlabel("Frequency $\\nu$ in $\\frac{1}{\\tau}$")
     plt.ylabel("Intensity in a.u.")
-    plt.ylim(-4*10**(6), +4*10**(6))
-    plt.xlim(-2*10**(7), +2*10**(7))
+    #plt.ylim(-4*10**(6), +4*10**(6))
+    #plt.xlim(-2*10**(7), +2*10**(7))
     plt.savefig(save_path, dpi=300)
     plt.show()
     plt.close()
 
 if __name__ == "__main__": 
-    plot_fourier("ZeroKelvin/e_pot.npy", 
-                 "ZeroKelvin/grid.npy", 
-                 save_path="ZeroKelvin/fourier.png")
-    plot_inverse_fourier("ZeroKelvin/e_pot.npy", 
-                         "ZeroKelvin/grid.npy", 
-                 save_path="ZeroKelvin/inverse_fourier")
+    plot_fourier("ZeroKelvin025T/e_pot.npy", 
+                 "ZeroKelvin025T/grid.npy", 
+                 save_path="ZeroKelvin025T/fourier.png")
+    plot_inverse_fourier("ZeroKelvin025T/e_pot.npy", 
+                         "ZeroKelvin025T/grid.npy", 
+                 save_path="ZeroKelvin025T/inverse_fourier")
