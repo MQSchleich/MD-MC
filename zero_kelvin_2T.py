@@ -3,8 +3,8 @@ from simulation import simulate
 from post_simulation import save_trajectories
 from data_processing import plot_single, calculate_kinetic_energy
 
-prefix = "ZeroKelvin2T/"
-traj_path = "ZeroKelvin/InitialConditions/"
+prefix = "Simulations/ZeroKelvin2T/"
+traj_path = "Simulations/ZeroKelvin/InitialConditions/"
 sigma = 1.0
 epsilon = 1.0
 constants = [sigma, epsilon]

@@ -20,6 +20,7 @@ def simulate(
     dt,
     force,
     constants,
+    energy=energy_lj_fast,
     periodic=False,
     from_traj=None,
     heat_bath=False,
@@ -28,7 +29,6 @@ def simulate(
 ):
     """Initialize and run a simulation in a Ncube**3 box, for steps"""
 
-    sigma, epsilon = constants
     if from_traj != None:
         positions, velocities = load_initials(from_traj)
         N = len(positions)
@@ -45,11 +45,11 @@ def simulate(
 
         if heat_bath == True:
             velocities = InitVelocity(N, T_heat, M)
-        E_pot[t] = energy_lj_fast(
-            positions, [sigma, epsilon], L
+        E_pot[t] = energy(
+            positions, constants=constants, box_length=L
         )  # calculate potential energy contribution
         F = force(
-            positions, [sigma, epsilon], L
+            positions, constants=constants, box_length=L
         )  ## calculate forces; should be a function that returns an N x 3 array
         A = F / M
         if periodic == True:
@@ -58,8 +58,8 @@ def simulate(
         nR = VerletNextR(positions, velocities, A, dt)
         # my_pos_in_box(nR, L)  ## from PrairieLearn HW
 
-        nF = force_lj(
-            nR, [sigma, epsilon], L
+        nF = force(
+            nR, constants=constants, box_length=L
         )  ## calculate forces with new positions nR
         nA = nF / M
         nV = VerletNextV(velocities, A, nA, dt)

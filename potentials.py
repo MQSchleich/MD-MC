@@ -38,9 +38,8 @@ def energy_lj(positions, constants, box_length):
                 distance += box_length / 2
 
 
-@njit()
 def energy_lj_fast(positions, constants, box_length):
-    """Fast energy calculation for MC initialization
+    """Fast energy calculation, e.g. for MC initialization
 
     Args:
         positions ([type]): [description]
@@ -91,10 +90,28 @@ def kinetic_energy(V, M):
 
 
 def energy_gravity(positions, constants, box_length):
-    """Energy calculation for the gravitational potential
+    """Potential energy calculation for the gravitational potential
 
     Args:
         positions ([type]): [description]
         constants ([type]): [description]
         box_length ([type]): [description]
     """
+    G = constants[0]
+    separations = positions[:, None, :] - positions
+
+    # check periodic boundary conditions
+    separations[separations > box_length / 2] -= box_length
+    separations[separations <= -box_length / 2] += box_length
+
+    # calculate NxN matrix with distances |r[i] - r[j]|
+    # set zero values to None for calculation of acceleration
+
+    distances = np.linalg.norm(separations, axis=-1)
+    distances[distances == 0] = None
+
+    # calculate potential energy for Lennard Jones potential
+    e_pot = -1 * G * 1 / distances
+    e_pot[np.isnan(e_pot)] = 0
+
+    return np.sum(e_pot)

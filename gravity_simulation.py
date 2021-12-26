@@ -1,6 +1,7 @@
 import numpy as np
 
 from gravity_force import force_gravity
+from potentials import energy_gravity
 from simulation import simulate
 from post_simulation import save_trajectories
 from data_processing import plot_components, plot_single, calculate_kinetic_energy
@@ -8,14 +9,13 @@ from statistics import compute_statistics_c
 from pressure import calculate_pressure_virial
 
 
-prefix = "Gravity/"
-traj_path = "Gravity/InitialConditions/"
-sigma = 1.0
-epsilon = 1.0
-constants = [sigma, epsilon]
+prefix = "Simulations/GravitySim/"
+traj_path = "Simulations/GravitySim/InitialConditions/"
+G = 9.81
+constants = [G]
 dt = 0.0001
 M = 1
-sim_time = 5.0
+sim_time = 1.0
 equilibration_time = sim_time / 2
 Ncube = 128
 L = 8
@@ -31,8 +31,9 @@ grid, pos, vels, E_pot = simulate(
     M=M,
     steps=steps,
     dt=time_step,
-    force=force_lj,
+    force=force_gravity,
     constants=constants,
+    energy=energy_gravity,
     periodic=True,
     from_traj=traj_path,
     heat_bath=False,
@@ -80,10 +81,6 @@ plot_single(
 )
 
 
-pressure = calculate_pressure_virial(
-    vel_trajectory=vels, masses=M, N=Ncube, k=1, epsilon=epsilon, sigma_q=512
-)
-
 axis_label = [
     "Time $t$ in $\\left(\\frac{\epsilon}{m\sigma^2}\\right)^{\\frac{1}{2}}$",
     "Pressure $P$ in $\\frac{m}{\\sigma\\tau^2}$",
@@ -97,4 +94,4 @@ plot_single(
 )
 
 
-compute_statistics_c(ener_traj=E_pot / Ncube, pressure_traj=pressure / Ncube)
+#compute_statistics_c(ener_traj=E_pot / Ncube, pressure_traj=pressure / Ncube)

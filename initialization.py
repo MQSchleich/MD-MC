@@ -36,12 +36,11 @@ def InitMonteCarlo(N, L, constants, energy=energy_lj_fast, tol=10 ** (3)):
         N ([type]): [description]
         L ([type]): [description]
     """
-    epsilon, sigma = constants
     N_cube = math.floor(N ** (1 / 3))
     positions = InitPositionCubic(Ncube=N_cube, L=L)[:2, :]
     # assert positions.shape == (125,3)
     counter = 0
-    prev_energy = energy_lj_fast(positions, constants, box_length=L)
+    prev_energy = energy(positions, constants, box_length=L)
     for i in tqdm(range(126)):
         energy_high = True
         while energy_high == True:

@@ -3,7 +3,7 @@ from numba import njit
 
 
 @njit()
-def force_gravity(positions, constants, box_length, gravity_constant=9.81):
+def force_gravity(positions, constants, box_length):
     """
     Calculates the force for point particles 
     :param positions:
@@ -15,7 +15,6 @@ def force_gravity(positions, constants, box_length, gravity_constant=9.81):
     :return:
     :rtype:
     """
-    epsilon, sigma = constants
     num = positions.shape[0]
     force = np.zeros((num, num, 3))
     for i in range(0, num - 1):
@@ -26,7 +25,7 @@ def force_gravity(positions, constants, box_length, gravity_constant=9.81):
                 distance -= box_length / 2
             elif distance <= -box_length / 2:
                 distance += box_length / 2
-            force[i, j, :] = gravity_constant / distance ** 2
+            force[i, j, :] = constants[0] / distance ** 2
             force[j, i, :] -= force[i, j, :]
 
     return np.sum(force, axis=1)
