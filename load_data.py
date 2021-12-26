@@ -1,6 +1,6 @@
 import numpy as np
 import warnings
-from numba import njit 
+from numba import njit
 
 
 def load_initials(prefix):

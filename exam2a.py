@@ -12,19 +12,19 @@ from pressure import calculate_pressure_virial
 
 prefix = "Exam2a/"
 traj_path = "Exam2a/InitialConditions/"
-pos = np.load(traj_path+"pos.npy")[:,:,-1]
-vels = np.load(traj_path+"vel.npy")[:,:,-1]
-r_max= 1.0
-K = 15.
+pos = np.load(traj_path + "pos.npy")[:, :, -1]
+vels = np.load(traj_path + "vel.npy")[:, :, -1]
+r_max = 1.0
+K = 15.0
 constants = [r_max, K]
 dt = 0.002
 M = 1
-sim_time =200
+sim_time = 200
 equilibration_time = sim_time / 2
 Ncube = 48
 k_b = 1
 L = 8
-T0 = 0.1*K*r_max/k_b
+T0 = 0.1 * K * r_max / k_b
 
 time_step = dt
 steps = int(sim_time / time_step)
@@ -39,9 +39,9 @@ grid, pos, vels, E_pot = simulate(
     force=fene_chain_force,
     constants=constants,
     periodic=False,
-    from_traj=True, 
+    from_traj=True,
     pos=pos,
-    vels=vels
+    vels=vels,
 )
 
 trajs = [grid, pos, vels, E_pot]
@@ -51,10 +51,7 @@ E_tot = E_kin + E_pot
 E_diff = E_tot - E_tot[0]
 r_g = radius_of_gyration(pos_traj=pos, N=Ncube)
 r_e = end_to_end_dist(pos_traj=pos)
-compute_statistics_fc(ener_traj = E_tot, 
-                      r_g_traj = r_g, 
-                      r_e_traj = r_e, 
-                      constants = [k_b, T0])
+compute_statistics_fc(ener_traj=E_tot, r_g_traj=r_g, r_e_traj=r_e, constants=[k_b, T0])
 
 axis_label = [
     "Time $t$ in $\\left(\\frac{\epsilon}{m\sigma^2}\\right)^{\\frac{1}{2}}$",
@@ -63,7 +60,7 @@ axis_label = [
 plot_single(
     prefix_data=prefix,
     out_path="E_diff_sim",
-    trajectory=E_diff/Ncube,
+    trajectory=E_diff / Ncube,
     grid=grid,
     axis_label=axis_label,
 )
@@ -74,7 +71,7 @@ axis_label = [
 ]
 plot_components(
     prefix_data=prefix,
-    trajectory=(np.sum(vels, axis=0) / (M*Ncube)),
+    trajectory=(np.sum(vels, axis=0) / (M * Ncube)),
     grid=grid,
     axis_label=axis_label,
 )
@@ -86,7 +83,7 @@ axis_label = [
 plot_single(
     prefix_data=prefix,
     out_path="E_pot_sim",
-    trajectory=E_pot/Ncube,
+    trajectory=E_pot / Ncube,
     grid=grid,
     axis_label=axis_label,
 )

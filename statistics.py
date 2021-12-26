@@ -1,7 +1,11 @@
 import numpy as np
 import csv
 from fene_processing import isochoric_heat
-def compute_statistics_fc(ener_traj, r_g_traj, r_e_traj, constants, save_path="Exam2a/"): 
+
+
+def compute_statistics_fc(
+    ener_traj, r_g_traj, r_e_traj, constants, save_path="Exam2a/"
+):
     """computes for statistcs for the exercise 2a
 
     Args:
@@ -11,31 +15,28 @@ def compute_statistics_fc(ener_traj, r_g_traj, r_e_traj, constants, save_path="E
     k_b, T = constants
     re_mean = np.mean(r_e_traj)
     re_std = np.std(r_e_traj)
-    re_rel = re_std/re_mean
+    re_rel = re_std / re_mean
 
     rg_mean = np.mean(r_g_traj)
     rg_std = np.std(r_g_traj)
-    rg_rel = rg_std/rg_mean
+    rg_rel = rg_std / rg_mean
 
     c_v = isochoric_heat(ener_traj, k=k_b, T=T)
-    cv_rel = 2*np.std(ener_traj)/np.mean(ener_traj)
-    std_cv = c_v*cv_rel
+    cv_rel = 2 * np.std(ener_traj) / np.mean(ener_traj)
+    std_cv = c_v * cv_rel
 
     d = {
         "re_mean": re_mean,
-        "re_std": re_std, 
-        "re_rel": re_rel, 
-
-        "rg_mean": rg_mean, 
-        "rg_std": rg_std, 
-        "rg_rel": rg_rel, 
-
-        "c_v": c_v, 
+        "re_std": re_std,
+        "re_rel": re_rel,
+        "rg_mean": rg_mean,
+        "rg_std": rg_std,
+        "rg_rel": rg_rel,
+        "c_v": c_v,
         "std_cv": std_cv,
-        "cv_rel": cv_rel
+        "cv_rel": cv_rel,
     }
     save_dict(d, save_path=save_path)
-
 
 
 def compute_statistics_c(ener_traj, pressure_traj, save_path="Exam1c/"):

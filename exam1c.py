@@ -15,7 +15,7 @@ epsilon = 1.0
 constants = [sigma, epsilon]
 dt = 0.0001
 M = 1
-sim_time = 5.
+sim_time = 5.0
 equilibration_time = sim_time / 2
 Ncube = 128
 L = 8
@@ -51,7 +51,7 @@ axis_label = [
 plot_single(
     prefix_data=prefix,
     out_path="E_diff",
-    trajectory=E_diff/Ncube,
+    trajectory=E_diff / Ncube,
     grid=grid,
     axis_label=axis_label,
 )
@@ -62,7 +62,7 @@ axis_label = [
 ]
 plot_components(
     prefix_data=prefix,
-    trajectory=(np.sum(vels, axis=0) / (M*Ncube)),
+    trajectory=(np.sum(vels, axis=0) / (M * Ncube)),
     grid=grid,
     axis_label=axis_label,
 )
@@ -74,7 +74,7 @@ axis_label = [
 plot_single(
     prefix_data=prefix,
     out_path="E_pot",
-    trajectory=E_pot/Ncube,
+    trajectory=E_pot / Ncube,
     grid=grid,
     axis_label=axis_label,
 )
@@ -91,10 +91,10 @@ axis_label = [
 plot_single(
     prefix_data=prefix,
     out_path="Pressure",
-    trajectory=pressure/Ncube,
+    trajectory=pressure / Ncube,
     grid=grid,
     axis_label=axis_label,
 )
 
 
-compute_statistics_c(ener_traj=E_pot/Ncube, pressure_traj=pressure/Ncube)
+compute_statistics_c(ener_traj=E_pot / Ncube, pressure_traj=pressure / Ncube)

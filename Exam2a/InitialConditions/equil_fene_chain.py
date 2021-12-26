@@ -11,17 +11,17 @@ from pressure import calculate_pressure_virial
 
 prefix = "EquilFeneChain/"
 traj_path = "EquilFeneChain/InitialConditions/"
-r_max= 1.0
+r_max = 1.0
 K = 2.0
 constants = [r_max, K]
 dt = 0.002
 M = 1
-sim_time =5000
+sim_time = 5000
 equilibration_time = sim_time / 2
 Ncube = 48
 k_b = 1
 L = 8
-T0 = 0.1*K*r_max/k_b
+T0 = 0.1 * K * r_max / k_b
 
 time_step = dt
 steps = int(sim_time / time_step)
@@ -52,7 +52,7 @@ axis_label = [
 plot_single(
     prefix_data=prefix,
     out_path="E_diff",
-    trajectory=E_diff/Ncube,
+    trajectory=E_diff / Ncube,
     grid=grid,
     axis_label=axis_label,
 )
@@ -63,7 +63,7 @@ axis_label = [
 ]
 plot_components(
     prefix_data=prefix,
-    trajectory=(np.sum(vels, axis=0) / (M*Ncube)),
+    trajectory=(np.sum(vels, axis=0) / (M * Ncube)),
     grid=grid,
     axis_label=axis_label,
 )
@@ -75,7 +75,7 @@ axis_label = [
 plot_single(
     prefix_data=prefix,
     out_path="E_pot",
-    trajectory=E_pot/Ncube,
+    trajectory=E_pot / Ncube,
     grid=grid,
     axis_label=axis_label,
 )

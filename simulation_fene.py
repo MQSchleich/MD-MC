@@ -3,7 +3,7 @@ from operator import pos
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-from numba import njit 
+from numba import njit
 
 from initialization import InitFeneChain, InitVelocity
 from fene_potential import fene_chain_potential
@@ -23,7 +23,7 @@ def simulate(
     energy=fene_chain_potential,
     periodic=False,
     from_traj=None,
-    pos=None, 
+    pos=None,
     vels=None,
     initializer=InitFeneChain,
 ):
@@ -57,9 +57,7 @@ def simulate(
         nR = VerletNextR(positions, velocities, A, dt)
         # my_pos_in_box(nR, L)  ## from PrairieLearn HW
 
-        nF = force(
-            nR, r_max, K
-        )  ## calculate forces with new positions nR
+        nF = force(nR, r_max, K)  ## calculate forces with new positions nR
         nA = nF / M
         nV = VerletNextV(velocities, A, nA, dt)
 
@@ -70,6 +68,7 @@ def simulate(
     grid = np.arange(0, steps * dt, dt)
     return [grid, pos, vels, E_pot]
 
+
 @njit
 def VerletNextR(r_t, v_t, a_t, h):
     """Return new positions after one Verlet step"""
@@ -78,6 +77,7 @@ def VerletNextR(r_t, v_t, a_t, h):
     r_t_plus_h = r_t + v_t * h + 0.5 * a_t * h * h
     return r_t_plus_h
 
+
 @njit
 def VerletNextV(v_t, a_t, a_t_plus_h, h):
     """Return new velocities after one Verlet step"""
@@ -85,4 +85,3 @@ def VerletNextV(v_t, a_t, a_t_plus_h, h):
     # Numpy loops over the coordinates for us.
     v_t_plus_h = v_t + 0.5 * (a_t + a_t_plus_h) * h
     return v_t_plus_h
-

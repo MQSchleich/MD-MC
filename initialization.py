@@ -1,7 +1,8 @@
 from operator import pos
 import numpy as np
 import math
-import openmc
+
+# import openmc
 import matplotlib.pyplot as plt
 from fene_potential import fene_chain_potential
 from potentials import energy_lj_fast
@@ -23,13 +24,12 @@ def InitFeneChain(N, L, constants):
         [type]: [description]
     """
     r_max, K = constants
-    N_cube  = math.floor(N**(1/3))+1
-    pos = InitPositionCubic(N, L=N*r_max/3)
+    N_cube = math.floor(N ** (1 / 3)) + 1
+    pos = InitPositionCubic(N, L=N * r_max / 3)
     return pos[:N, :]
 
 
-
-def InitMonteCarlo(N, L, constants, tol=10 ** (3)):
+def InitMonteCarlo(N, L, constants, energy=energy_lj_fast, tol=10 ** (3)):
     """intialize particles with MC 
 
     Args:
@@ -43,12 +43,11 @@ def InitMonteCarlo(N, L, constants, tol=10 ** (3)):
     counter = 0
     prev_energy = energy_lj_fast(positions, constants, box_length=L)
     for i in tqdm(range(126)):
-
         energy_high = True
         while energy_high == True:
             ran_floats = np.random.uniform(low=-4, high=4, size=3).reshape((1, 3))
             tmp_new_pos = np.concatenate((positions, ran_floats), axis=0)
-            new_energy = energy_lj_fast(positions, constants, box_length=L)
+            new_energy = energy(positions, constants, box_length=L)
             dif = abs(prev_energy - new_energy)
             if dif <= tol:
                 positions = tmp_new_pos
@@ -108,6 +107,7 @@ def InitPositionCubicMC(N, L):
     )
     return positions
 
+
 @njit
 def InitPositionCubic(Ncube, L):
     """Places Ncube^3 atoms in a cubic box; returns position vector"""
@@ -127,6 +127,7 @@ def InitPositionCubic(Ncube, L):
                 n += 1
     return position
 
+
 @njit
 def InitVelocity(N, T0, mass=1.0, seed=1):
     dim = 3
@@ -140,7 +141,8 @@ def InitVelocity(N, T0, mass=1.0, seed=1):
     velocity *= vscale  # rescale
     return velocity
 
-def visualize_init(positions): 
+
+def visualize_init(positions):
     fig = plt.figure()
     ax = fig.add_subplot(projection="3d")
     ax.scatter(positions[:, 0], positions[:, 1], positions[:, 2], marker="o")
@@ -156,10 +158,9 @@ if __name__ == "__main__":
     r_max = 1
     constants = [K, r_max]
     N = 48
-    L = N*r_max/3
+    L = N * r_max / 3
     positions = InitFeneChain(N, L, constants)
 
     visualize_init(positions)
     pos_2 = np.load("EquilFeneChain/pos.npy")
-    visualize_init(pos_2[:,:,0])
-    
+    visualize_init(pos_2[:, :, 0])

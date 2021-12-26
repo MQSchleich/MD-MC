@@ -2,8 +2,17 @@ from matplotlib.pyplot import axis
 import numpy as np
 from numba import njit
 
+
 def energy_lj_plot_1(distances, constants, box_length):
-    """
+    """Caclulates the LJ energy for plotting
+
+    Args:
+        distances ([type]): [description]
+        constants ([type]): [description]
+        box_length ([type]): [description]
+
+    Returns:
+        [type]: [description]
     """
     epsilon, sigma = constants
     tmp = sigma / distances
@@ -14,30 +23,32 @@ def energy_lj_plot_1(distances, constants, box_length):
 
     return e_pot
 
+
+# TODO: Find if necessary
 def energy_lj(positions, constants, box_length):
     """
     """
-    for i in range(0,num-1): 
-        for j in range(i+1, num): 
-            difference=positions[j,:]- positions[i,:]
+    for i in range(0, num - 1):
+        for j in range(i + 1, num):
+            difference = positions[j, :] - positions[i, :]
             distance = np.linalg.norm(difference)
-            if distance> box_length/2: 
-                 distance -= box_length/2
-            elif distance<= -box_length/2: 
-                distance += box_length/2 
-                
-#TODO implement
-def energy_lj_fast(positions, constants, box_length):
-    """
+            if distance > box_length / 2:
+                distance -= box_length / 2
+            elif distance <= -box_length / 2:
+                distance += box_length / 2
 
-    :param positions:
-    :type positions:
-    :param constants:
-    :type constants:
-    :param box_length:
-    :type box_length:
-    :return:
-    :rtype:
+
+@njit()
+def energy_lj_fast(positions, constants, box_length):
+    """Fast energy calculation for MC initialization
+
+    Args:
+        positions ([type]): [description]
+        constants ([type]): [description]
+        box_length ([type]): [description]
+
+    Returns:
+        [type]: [description]
     """
     epsilon, sigma = constants
     separations = positions[:, None, :] - positions
@@ -77,3 +88,13 @@ def kinetic_energy(V, M):
     for i in range(len(V)):
         e_kin += 0.5 * M * np.sum(np.square(V[i, :]))
     return e_kin
+
+
+def energy_gravity(positions, constants, box_length):
+    """Energy calculation for the gravitational potential
+
+    Args:
+        positions ([type]): [description]
+        constants ([type]): [description]
+        box_length ([type]): [description]
+    """

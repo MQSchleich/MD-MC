@@ -1,31 +1,26 @@
 import numpy as np
 
-from fene_potential import fene_chain_potential, fene_ring_potential
-from fene_force import force_fene_periodic
-from simulation_langevin import simulate
+from gravity_force import force_gravity
+from simulation import simulate
 from post_simulation import save_trajectories
 from data_processing import plot_components, plot_single, calculate_kinetic_energy
 from statistics import compute_statistics_c
 from pressure import calculate_pressure_virial
 
 
-prefix = "EquilFeneLangevin/"
-traj_path = "EquilFeneLangevin/InitialConditions/"
-# pos = np.load(traj_path+"pos.npy")[:,:,-1]
-# vels = np.load(traj_path+"vel.npy")[:,:,-1]
-r_max = 1.0
-K = 15.0
-constants = [r_max, K]
-dt = 0.002
+prefix = "Gravity/"
+traj_path = "Gravity/InitialConditions/"
+sigma = 1.0
+epsilon = 1.0
+constants = [sigma, epsilon]
+dt = 0.0001
 M = 1
-sim_time = 500
+sim_time = 5.0
 equilibration_time = sim_time / 2
-Ncube = 48
-k_b = 1
-L = Ncube * r_max / 3
-T0 = 0.1 * K * r_max / k_b
-kbT = k_b * T0
-gamma = 0.2 * np.sqrt(K / M)
+Ncube = 128
+L = 8
+T0 = 1.6
+
 time_step = dt
 steps = int(sim_time / time_step)
 
@@ -36,13 +31,14 @@ grid, pos, vels, E_pot = simulate(
     M=M,
     steps=steps,
     dt=time_step,
-    gamma=gamma,
-    kbT=kbT,
-    force=force_fene_periodic,
-    energy=fene_ring_potential,
+    force=force_lj,
     constants=constants,
     periodic=True,
+    from_traj=traj_path,
+    heat_bath=False,
+    T_heat=None,
 )
+
 trajs = [grid, pos, vels, E_pot]
 save_trajectories(trajs, prefix=prefix)
 E_kin = calculate_kinetic_energy(vel_trajectory=vels, mass=M)
@@ -82,3 +78,23 @@ plot_single(
     grid=grid,
     axis_label=axis_label,
 )
+
+
+pressure = calculate_pressure_virial(
+    vel_trajectory=vels, masses=M, N=Ncube, k=1, epsilon=epsilon, sigma_q=512
+)
+
+axis_label = [
+    "Time $t$ in $\\left(\\frac{\epsilon}{m\sigma^2}\\right)^{\\frac{1}{2}}$",
+    "Pressure $P$ in $\\frac{m}{\\sigma\\tau^2}$",
+]
+plot_single(
+    prefix_data=prefix,
+    out_path="Pressure",
+    trajectory=pressure / Ncube,
+    grid=grid,
+    axis_label=axis_label,
+)
+
+
+compute_statistics_c(ener_traj=E_pot / Ncube, pressure_traj=pressure / Ncube)

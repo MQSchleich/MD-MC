@@ -3,7 +3,7 @@ from operator import pos
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-from numba import njit 
+from numba import njit
 
 from initialization import InitFeneChain, InitVelocity
 from fene_potential import fene_chain_potential
@@ -25,7 +25,7 @@ def simulate(
     energy=fene_chain_potential,
     periodic=False,
     from_traj=None,
-    pos=None, 
+    pos=None,
     vels=None,
     initializer=InitFeneChain,
 ):
@@ -56,19 +56,17 @@ def simulate(
         if periodic == True:
             positions[positions >= L / 2] -= L
             positions[positions < -L / 2] += L
-        #B
-        v  = velocity_update(velocities, A=A, dt=dt)
-        #A
+        # B
+        v = velocity_update(velocities, A=A, dt=dt)
+        # A
         nR = VerletNextR(positions, velocities, A, dt)
         # my_pos_in_box(nR, L)  ## from PrairieLearn HW
-        #O
-        v = random_velocity_update(v=v,gamma=gamma,kBT=kbT,dt=dt)
-        #A
+        # O
+        v = random_velocity_update(v=v, gamma=gamma, kBT=kbT, dt=dt)
+        # A
         nR = VerletNextR(nR, velocities, A, dt)
-        #B
-        nF = force(
-            nR, r_max, K
-        )  ## calculate forces with new positions nR
+        # B
+        nF = force(nR, r_max, K)  ## calculate forces with new positions nR
         nA = nF / M
         nV = VerletNextV(velocities, A, nA, dt)
 
@@ -79,8 +77,9 @@ def simulate(
     grid = np.arange(0, steps * dt, dt)
     return [grid, pos, vels, E_pot]
 
+
 @njit
-def random_velocity_update(v,gamma,kBT,dt): 
+def random_velocity_update(v, gamma, kBT, dt):
     """Implements a random velocity verlet update for the BAOAB scheme
 
 
@@ -88,11 +87,10 @@ def random_velocity_update(v,gamma,kBT,dt):
         [type]: [description]
     """
     ran = np.random.normal()
-    c1 = np.exp(-gamma*dt)
-    c2 = np.sqrt(1-c1*c1)*np.sqrt(kBT)
-    v_new = c1*v + ran*c2
+    c1 = np.exp(-gamma * dt)
+    c2 = np.sqrt(1 - c1 * c1) * np.sqrt(kBT)
+    v_new = c1 * v + ran * c2
     return v_new
-
 
 
 @njit
@@ -103,10 +101,12 @@ def VerletNextR(r_t, v_t, a_t, h):
     r_t_plus_h = r_t + v_t * h + 0.5 * a_t * h * h
     return r_t_plus_h
 
+
 @njit
-def velocity_update(v,A,dt):
-    v_new = v + A*dt/2.
+def velocity_update(v, A, dt):
+    v_new = v + A * dt / 2.0
     return v_new
+
 
 @njit
 def VerletNextV(v_t, a_t, a_t_plus_h, h):
@@ -115,4 +115,3 @@ def VerletNextV(v_t, a_t, a_t_plus_h, h):
     # Numpy loops over the coordinates for us.
     v_t_plus_h = v_t + 0.5 * (a_t + a_t_plus_h) * h
     return v_t_plus_h
-
